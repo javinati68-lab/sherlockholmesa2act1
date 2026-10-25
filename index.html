@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Rocha’s English Class: Gerunds and Infinitives</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#3b82f6',
+                            darkBlue: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .shiny-blue-border {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.7), 0 0 15px rgba(96, 165, 250, 0.5);
+            border-radius: 0.5rem;
+            transition: box-shadow 0.3s ease;
+            background-color: transparent;
+        }
+
+        .shiny-blue-border:focus {
+            outline: none;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.9), 0 0 20px rgba(96, 165, 250, 0.8);
+        }
+
+        /* Puzzle Styles */
+        #puzzle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .puzzle-board {
+            display: grid;
+            grid-template-columns: repeat(5, 70px);
+            grid-template-rows: repeat(4, 70px);
+            gap: 2px;
+            background-color: #e5e7eb;
+            border: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        @media (min-width: 640px) {
+            .puzzle-board {
+                grid-template-columns: repeat(5, 80px);
+                grid-template-rows: repeat(4, 80px);
+            }
+        }
+        .dark .puzzle-board {
+            background-color: #374151;
+        }
+
+        .puzzle-pieces-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 100px;
+            padding: 10px;
+            border: 2px dashed #9ca3af;
+            border-radius: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .puzzle-slot {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #d1d5db;
+        }
+        @media (min-width: 640px) {
+            .puzzle-slot {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        .dark .puzzle-slot {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: #4b5563;
+        }
+
+        .puzzle-piece {
+            width: 70px;
+            height: 70px;
+            cursor: grab;
+            background-image: url('Image5.jpg');
+            background-size: 350px 280px;
+            border: 1px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        @media (min-width: 640px) {
+            .puzzle-piece {
+                width: 80px;
+                height: 80px;
+                background-size: 400px 320px;
+            }
+        }
+        
+        .puzzle-piece:active {
+            cursor: grabbing;
+        }
+
+        .mcq-label.correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+        .dark .mcq-label.correct {
+            background-color: #064e3b !important;
+            color: #a7f3d0 !important;
+        }
+        
+        .mcq-label.incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .dark .mcq-label.incorrect {
+            background-color: #7f1d1d !important;
+            color: #fecaca !important;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .page-section {
+                display: none !important;
+            }
+            #results-section {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+            }
+            .shiny-blue-border {
+                box-shadow: none !important;
+                border: 1px solid #000 !important;
+            }
+        }
+        
+        .print-only { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-md p-4 sticky top-0 z-50 no-print">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl sm:text-2xl font-bold text-center text-brand-blue flex-1">
+                <i class="fa-solid fa-book-open mr-2"></i>Mr. Rocha’s English Class: Gerunds and Infinitives
+            </h1>
+            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue" aria-label="Toggle Dark Mode">
+                <i class="fa-solid fa-moon dark:hidden text-gray-800"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-yellow-300"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 no-print" id="main-content">
+        
+        <!-- User Info Section -->
+        <section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg mb-8" id="user-info-section">
+            <h2 class="text-lg font-semibold mb-4 border-b pb-2 dark:border-gray-700">Student Information</h2>
+            <div class="flex flex-col sm:flex-row gap-6">
+                <div class="flex-1 flex flex-col gap-2">
+                    <label for="student-name" class="font-medium text-sm">Full Name:</label>
+                    <input type="text" id="student-name" placeholder="Type your name here..." class="shiny-blue-border p-3 w-full bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500">
+                </div>
+                <div class="flex-1 flex flex-col gap-2">
+                    <label for="student-date" class="font-medium text-sm">Date:</label>
+                    <input type="date" id="student-date" class="shiny-blue-border p-3 w-full bg-transparent text-gray-800 dark:text-gray-100 cursor-pointer">
+                </div>
+            </div>
+            <div id="validation-msg" class="text-red-500 text-sm mt-3 hidden font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Please enter your name and date before continuing.</div>
+        </section>
+
+        <!-- Progress Bar -->
+        <div class="mb-8 w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700 overflow-hidden shadow-inner">
+            <div id="progress-bar" class="bg-gradient-to-r from-blue-400 to-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <!-- ==================== PAGES ==================== -->
+        
+        <!-- Introduction -->
+        <div id="page-intro" class="page-section bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-6 text-center text-brand-darkBlue dark:text-blue-400">Introduction</h2>
+            <div class="w-full flex justify-center mb-6">
+                <img src="Image1.jpg" onerror="this.src='https://placehold.co/800x400/3b82f6/white?text=Introduction+Image+(Image1)'" alt="Introduction Image" class="rounded-lg shadow-md max-w-full h-auto object-contain max-h-[400px]">
+            </div>
+            <p class="text-lg text-center font-medium">Welcome to the interactive worksheet! Please follow the readings, listen to the audio files, and answer the questions based on the life of Sir Arthur Conan Doyle.</p>
+        </div>
+
+        <!-- Page 1 -->
+        <div id="page-1" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 1: The Man who Created Sherlock Holmes</h2>
+            
+            <div class="w-full mb-6 flex flex-col items-center">
+                <img src="Image2.jpg" onerror="this.src='https://placehold.co/800x400/10b981/white?text=Sir+Arthur+Conan+Doyle+(Image2)'" alt="Sir Arthur Conan Doyle" class="rounded-lg shadow-md w-full h-auto object-contain max-h-[450px]">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 italic text-center">Sir Arthur Conan Doyle. National Portrait Gallery, London.</p>
+            </div>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio1.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none mb-8 text-justify">
+                <p>Sherlock Holmes and Dr John Watson are two of the most famous and best loved characters in all of literature. But Arthur Conan Doyle, their creator, was just as fascinating as his creations. Arthur Conan Doyle was born on 22 May 1859 in Edinburgh, Scotland. His father was a timid and impractical civil servant and when Arthur was still a young man his father had to go to live in a mental hospital because he was an alcoholic and epileptic.</p>
+            </div>
+
+            <!-- Activity 1 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="1">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 1 Questions</h3>
+                
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">1. Where was Arthur Conan Doyle born?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p1q1">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q1" value="a" class="mr-2 accent-blue-600" data-correct="true"> Edinburgh, Scotland
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q1" value="b" class="mr-2 accent-blue-600"> London, England
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q1" value="c" class="mr-2 accent-blue-600"> Dublin, Ireland
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q1" value="d" class="mr-2 accent-blue-600"> Southsea, England
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">2. Why did his father go to live in a mental hospital?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p1q2">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q2" value="a" class="mr-2 accent-blue-600"> He wanted to write a book
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q2" value="b" class="mr-2 accent-blue-600" data-correct="true"> Because he was an alcoholic and epileptic
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q2" value="c" class="mr-2 accent-blue-600"> To study medicine with Joseph Bell
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <input type="radio" name="p1q2" value="d" class="mr-2 accent-blue-600"> He was a famous detective
+                        </label>
+                    </div>
+                </div>
+
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-2 w-full sm:w-auto" onclick="checkAnswers(1)">Check Answers</button>
+                <div class="feedback-msg hidden mt-3 font-semibold"></div>
+            </div>
+        </div>
+
+        <!-- Page 2 -->
+        <div id="page-2" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 2: Early Studies and Adventures</h2>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio2.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none mb-6 text-justify">
+                <p>His mother, on the other hand, was a strong, proud woman who came from a distinguished military family. She filled Arthur with ideas of honour and chivalry – two ideas that are present in all his writings and actions.</p>
+                <p>In 1876 Arthur began his medical studies at Edinburgh University. Because he had very little money, Arthur worked for a doctor called Joseph Bell. Joseph Bell amazed his students because he could guess the jobs and lifestyle of his patients by simply observing them carefully. Joseph Bell was Arthur’s principal model for Sherlock Holmes.</p>
+                <p>In 1880 Arthur accepted a job as ship’s doctor on an arctic whaler. During the seven-month voyage of this ship Arthur had many exciting adventures: he saw the killing of Greenland seals and whales and he himself almost drowned in icy arctic waters.</p>
+            </div>
+
+            <div class="w-full mb-8 flex flex-col items-center">
+                <img src="Image3.jpg" onerror="this.src='https://placehold.co/800x400/8b5cf6/white?text=Mary+Doyle+(Image3)'" alt="Mary Doyle" class="rounded-lg shadow-md w-full h-auto object-contain max-h-[450px]">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 italic text-center">Mary Doyle. Conan Doyle’s mother in 1891. The Richard Lancelyn Green Collection.</p>
+            </div>
+
+            <!-- Activity 2 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="2">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 2 Questions</h3>
+                
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">1. Who was Arthur’s principal model for Sherlock Holmes?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p2q1">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q1" value="a" class="mr-2 accent-blue-600"> Dr. John Watson
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q1" value="b" class="mr-2 accent-blue-600"> His father
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q1" value="c" class="mr-2 accent-blue-600" data-correct="true"> Dr. Joseph Bell
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q1" value="d" class="mr-2 accent-blue-600"> A patient he treated
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">2. What exciting job did Arthur accept in 1880?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p2q2">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q2" value="a" class="mr-2 accent-blue-600"> Professor at Edinburgh University
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q2" value="b" class="mr-2 accent-blue-600"> A private detective in London
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q2" value="c" class="mr-2 accent-blue-600" data-correct="true"> Ship’s doctor on an arctic whaler
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p2q2" value="d" class="mr-2 accent-blue-600"> A military leader
+                        </label>
+                    </div>
+                </div>
+
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-2 w-full sm:w-auto" onclick="checkAnswers(2)">Check Answers</button>
+                <div class="feedback-msg hidden mt-3 font-semibold"></div>
+            </div>
+        </div>
+
+        <!-- Page 3 -->
+        <div id="page-3" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 3: The Birth (and Planned Death) of Holmes</h2>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio3.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none mb-8 text-justify">
+                <p>After this Arthur finished his medical studies and started a practice in Southsea, England in 1882, but it was not a success. Very few patients came, so Arthur had time to write. One of the books he wrote was a novel called A Study in Scarlet. This was the first Sherlock Holmes story.</p>
+                <p>To make money, Arthur sent a short story about Holmes to a popular monthly magazine called the Strand. Holmes soon became a big success. The Strand immediately asked Arthur for more stories about Sherlock Holmes, but from the beginning he had a strange relationship with his famous creation: he did not think his stories about Sherlock Holmes were serious and artistic enough. He wanted to write serious historic novels. So, from the beginning, Arthur planned the death of Sherlock Holmes. When Arthur told his mother about his plans to eliminate Sherlock Holmes forever she wrote to him, 'You won't! You can't! You mustn't!' But in 1893 Arthur wrote a story called The Final Problem in which Holmes dies.</p>
+            </div>
+
+            <!-- Activity 3 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="3">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 3 Questions</h3>
+                
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">1. What was the title of the very first Sherlock Holmes story?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p3q1">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q1" value="a" class="mr-2 accent-blue-600"> The Final Problem
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q1" value="b" class="mr-2 accent-blue-600" data-correct="true"> A Study in Scarlet
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q1" value="c" class="mr-2 accent-blue-600"> The Hound of the Baskervilles
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q1" value="d" class="mr-2 accent-blue-600"> The Strand
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">2. Why did Arthur plan to eliminate Sherlock Holmes?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p3q2">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q2" value="a" class="mr-2 accent-blue-600"> His mother told him to do it
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q2" value="b" class="mr-2 accent-blue-600"> The magazine stopped paying him
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q2" value="c" class="mr-2 accent-blue-600" data-correct="true"> He wanted to write serious historic novels
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p3q2" value="d" class="mr-2 accent-blue-600"> He hated mysteries
+                        </label>
+                    </div>
+                </div>
+
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-2 w-full sm:w-auto" onclick="checkAnswers(3)">Check Answers</button>
+                <div class="feedback-msg hidden mt-3 font-semibold"></div>
+            </div>
+        </div>
+
+        <!-- Page 4 -->
+        <div id="page-4" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 4: Public Outrage and Return</h2>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio4.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none mb-8 text-justify">
+                <p>The reaction of readers was immediate. The Strand lost 20,000 readers, and people wrote thousands of letters to Doyle begging him to bring Holmes back to life. Many people even insulted him. One woman wrote these eloquent words to Arthur: 'You Brute.' Finally, in 1901 Arthur wrote a serialised Sherlock Holmes novel called The Hound of the Baskervilles; the Strand's circulation increased by thirty thousand copies. From then on Holmes appeared in the Strand until 1927, just three years before Arthur's death.</p>
+                <p>But Arthur's life was not just Sherlock Holmes. He was very active in public affairs. Arthur spoke in favour of a Channel Tunnel, steel helmets for soldiers and inflatable jackets for sailors.</p>
+            </div>
+
+            <!-- Activity 4 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="4">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 4 Questions</h3>
+                
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">1. How did readers react to the death of Sherlock Holmes?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p4q1">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q1" value="a" class="mr-2 accent-blue-600"> They were happy and bought his historic novels
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q1" value="b" class="mr-2 accent-blue-600" data-correct="true"> They cancelled subscriptions and wrote thousands of letters
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q1" value="c" class="mr-2 accent-blue-600"> They didn't care at all
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q1" value="d" class="mr-2 accent-blue-600"> They organized a funeral for the character
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">2. In his public affairs life, which of the following did Arthur speak in favour of?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p4q2">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q2" value="a" class="mr-2 accent-blue-600"> Banning the Strand magazine
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q2" value="b" class="mr-2 accent-blue-600" data-correct="true"> A Channel Tunnel and steel helmets for soldiers
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q2" value="c" class="mr-2 accent-blue-600"> Creating a real-life Sherlock Holmes detective agency
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p4q2" value="d" class="mr-2 accent-blue-600"> Sending soldiers to the arctic
+                        </label>
+                    </div>
+                </div>
+
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-2 w-full sm:w-auto" onclick="checkAnswers(4)">Check Answers</button>
+                <div class="feedback-msg hidden mt-3 font-semibold"></div>
+            </div>
+        </div>
+
+        <!-- Page 5 -->
+        <div id="page-5" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 5: Spiritualism and Fairies</h2>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio5.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none mb-6 text-justify">
+                <p>He used his real Holmes-like analytic skills to solve crimes and to defend people who were unjustly accused of crimes. Arthur also became an important advocate of spiritualism. Spiritualism is the belief that it is possible to communicate with the spirits of the dead. Arthur also believed in the existence of fairies, and said that some photographs of a little girl with fairies were real. He even wrote a book in 1922 called The Coming of the Fairies. Of course, Arthur, the creator of the most logical man in the world, Sherlock Holmes, was greatly ridiculed for these beliefs, but Arthur did not seem to care. As always, he stuck to his beliefs with honour and with pleasant good humour.</p>
+                <p>Arthur died in Crowborough, Sussex, England on 7 July 1930, one of the most famous and best loved men of his day.</p>
+            </div>
+
+            <div class="w-full mb-8 flex flex-col items-center">
+                <img src="Image4.jpg" onerror="this.src='https://placehold.co/800x400/ec4899/white?text=Frances+Griffiths+and+the+Fairies+(Image4)'" alt="Fairies Photograph" class="rounded-lg shadow-md w-full h-auto object-contain max-h-[450px]">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 italic text-center">The photograph of Frances Griffiths and the fairies (1917), which Conan Doyle believed was real. The Richard Lancelyn Green Collection.</p>
+            </div>
+
+            <!-- Activity 5 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="5">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 5 Questions</h3>
+                
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">1. What is spiritualism according to the text?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p5q1">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q1" value="a" class="mr-2 accent-blue-600"> The belief in solving logical mysteries
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q1" value="b" class="mr-2 accent-blue-600" data-correct="true"> The belief that it is possible to communicate with spirits of the dead
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q1" value="c" class="mr-2 accent-blue-600"> A medical practice in Sussex
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q1" value="d" class="mr-2 accent-blue-600"> A technique for writing novels
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">2. How did the public react to Arthur's belief in fairies?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p5q2">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q2" value="a" class="mr-2 accent-blue-600" data-correct="true"> He was greatly ridiculed
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q2" value="b" class="mr-2 accent-blue-600"> He was praised as a visionary genius
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q2" value="c" class="mr-2 accent-blue-600"> People completely ignored him
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p5q2" value="d" class="mr-2 accent-blue-600"> Everyone agreed that the photos were real
+                        </label>
+                    </div>
+                </div>
+
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-2 w-full sm:w-auto" onclick="checkAnswers(5)">Check Answers</button>
+                <div class="feedback-msg hidden mt-3 font-semibold"></div>
+            </div>
+        </div>
+
+        <!-- Page 6 -->
+        <div id="page-6" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 6: The Sherlock Holmes Books</h2>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio6.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none mb-8">
+                <p>The Sherlock Holmes stories were first published in the Strand magazine. The dates below say when these stories were first published as books.</p>
+                <ul class="list-disc pl-6 space-y-2 font-medium">
+                    <li><span class="font-bold text-brand-blue">A Study in Scarlet</span> — (1890) This is the first Holmes novel and it appeared in a magazine called Beeton's Christmas Annual</li>
+                    <li><span class="font-bold text-brand-blue">The Sign of the Four</span> — (1890) a novel</li>
+                    <li><span class="font-bold text-brand-blue">The Adventures of Sherlock Holmes</span> — (1892) Both The Blue Carbuncle and A Case of Identity appeared in this collection</li>
+                    <li><span class="font-bold text-brand-blue">The Memoirs of Sherlock Holmes</span> — (1894) The Yellow Face appeared in this volume</li>
+                    <li><span class="font-bold text-brand-blue">The Return of Sherlock Holmes</span> — (1905) a collection of stories</li>
+                    <li><span class="font-bold text-brand-blue">The Hound of the Baskervilles</span> — (1902) a novel</li>
+                    <li><span class="font-bold text-brand-blue">The Valley of Fear</span> — (1915) a novel</li>
+                    <li><span class="font-bold text-brand-blue">His Last Bow</span> — (1917) a collection of stories</li>
+                    <li><span class="font-bold text-brand-blue">The Case-Book of Sherlock Holmes</span> — (1927) a collection of stories</li>
+                </ul>
+            </div>
+
+            <!-- Activity 6 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="6">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 6 Questions</h3>
+                
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">1. When was 'The Hound of the Baskervilles' first published as a book?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p6q1">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q1" value="a" class="mr-2 accent-blue-600"> 1890
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q1" value="b" class="mr-2 accent-blue-600" data-correct="true"> 1902
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q1" value="c" class="mr-2 accent-blue-600"> 1915
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q1" value="d" class="mr-2 accent-blue-600"> 1894
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="font-semibold mb-3">2. Which collection of stories was published in 1927?</p>
+                    <div class="mcq-options grid grid-cols-1 sm:grid-cols-2 gap-3" data-name="p6q2">
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q2" value="a" class="mr-2 accent-blue-600"> His Last Bow
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q2" value="b" class="mr-2 accent-blue-600"> The Return of Sherlock Holmes
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q2" value="c" class="mr-2 accent-blue-600" data-correct="true"> The Case-Book of Sherlock Holmes
+                        </label>
+                        <label class="mcq-label block p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer">
+                            <input type="radio" name="p6q2" value="d" class="mr-2 accent-blue-600"> The Memoirs of Sherlock Holmes
+                        </label>
+                    </div>
+                </div>
+
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-2 w-full sm:w-auto" onclick="checkAnswers(6)">Check Answers</button>
+                <div class="feedback-msg hidden mt-3 font-semibold"></div>
+            </div>
+        </div>
+
+        <!-- Page 7 (Summary) -->
+        <div id="page-7" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Part 7: Opinion & Summary</h2>
+            
+            <p class="mb-4 font-medium">Listen to a young woman talking about her opinion of the Sherlock Holmes stories. Summarize what she says. Do you agree?</p>
+            
+            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg mb-6 flex flex-col sm:flex-row items-center gap-4">
+                <i class="fa-solid fa-headphones text-2xl text-blue-500"></i>
+                <audio controls class="w-full" src="Audio7.mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <!-- Activity 7 -->
+            <div class="activity-block bg-gray-100 dark:bg-gray-750 p-6 rounded-lg border border-gray-200 dark:border-gray-600 mb-4" data-page="7">
+                <h3 class="text-lg font-bold mb-4"><i class="fa-solid fa-pen-clip mr-2 text-brand-blue"></i>Activity 7: Writing</h3>
+                <label for="summary-text" class="block font-semibold mb-2">Write your summary and opinion below:</label>
+                <textarea id="summary-text" rows="6" class="shiny-blue-border w-full p-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg resize-none" placeholder="Type your summary here..."></textarea>
+                <button class="check-answers-btn bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md mt-4 w-full sm:w-auto" onclick="checkAnswers(7)">Save Answer</button>
+                <div class="feedback-msg hidden mt-3 font-semibold text-green-600 dark:text-green-400"><i class="fa-solid fa-check mr-2"></i>Answer saved.</div>
+            </div>
+        </div>
+
+        <!-- Activity 8 (Puzzle) -->
+        <div id="page-8" class="page-section hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
+            <h2 class="text-2xl font-bold mb-4 text-brand-darkBlue dark:text-blue-400 border-b pb-2 dark:border-gray-700">Activity 8: Jigsaw Puzzle</h2>
+            <p class="mb-4 text-center">Drag and drop the pieces to complete the image. (Using a 350x280 grid for the 20 pieces)</p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-6">
+                <div class="flex flex-col items-center">
+                    <p class="font-semibold mb-2">Target Image</p>
+                    <img src="Image5.jpg" onerror="this.src='https://placehold.co/350x280/eab308/white?text=Target+Image+(Image5)'" class="w-[200px] h-[160px] object-cover border-2 border-gray-300 rounded shadow-sm" alt="Target Image">
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <div class="text-2xl font-mono font-bold mb-4 bg-gray-800 text-white px-6 py-2 rounded-lg shadow-inner shadow-black/50" id="timer-display">00:00</div>
+                    <div class="flex gap-4">
+                        <button id="start-puzzle-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md"><i class="fa-solid fa-play mr-2"></i>Start</button>
+                        <button id="restart-puzzle-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md hidden"><i class="fa-solid fa-rotate-right mr-2"></i>Restart</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Puzzle Area -->
+            <div id="puzzle-container" class="opacity-50 pointer-events-none transition-opacity duration-300">
+                <div class="puzzle-board" id="puzzle-board"></div>
+                <div class="puzzle-pieces-pool" id="puzzle-pool"></div>
+            </div>
+            
+            <div class="text-center mt-6">
+                 <button class="bg-brand-blue hover:bg-brand-darkBlue text-white font-semibold py-2 px-6 rounded-lg transition-colors shadow-md w-full sm:w-auto" onclick="markPuzzleComplete()">Mark Section Completed</button>
+            </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 no-print bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md" id="nav-footer">
+            <button id="btn-back" class="hidden w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md"><i class="fa-solid fa-arrow-left mr-2"></i>Back</button>
+            <div class="flex-1"></div>
+            <button id="btn-next" class="w-full sm:w-auto bg-brand-blue hover:bg-brand-darkBlue text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md">Next<i class="fa-solid fa-arrow-right ml-2"></i></button>
+            <button id="btn-submit" class="hidden w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-md text-lg"><i class="fa-solid fa-flag-checkered mr-2"></i>Submit & Get Results</button>
+        </div>
+        
+    </main>
+
+    <!-- Results Section -->
+    <section id="results-section" class="hidden w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen bg-white dark:bg-gray-900 animate-[fadeIn_0.5s_ease-in-out]">
+        <div class="print-only text-center mb-6">
+            <h1 class="text-3xl font-bold mb-2">Mr. Rocha’s English Class</h1>
+            <h2 class="text-xl">Worksheet Results</h2>
+        </div>
+        
+        <div class="flex justify-between items-center mb-8 border-b pb-4 dark:border-gray-700">
+            <h2 class="text-3xl font-bold text-brand-darkBlue dark:text-blue-400"><i class="fa-solid fa-chart-pie mr-2"></i>Your Results</h2>
+            <button onclick="window.print()" class="no-print bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md"><i class="fa-solid fa-print mr-2"></i>Print Results</button>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl shadow-lg mb-8 text-center shiny-blue-border">
+            <h3 class="text-2xl font-semibold mb-2" id="res-student-name">Student: </h3>
+            <p class="text-lg text-gray-600 dark:text-gray-300" id="res-student-date">Date: </p>
+            <div class="text-5xl font-extrabold mt-6 mb-2 text-brand-blue" id="res-score-display">0%</div>
+            <p class="text-lg font-medium text-gray-600 dark:text-gray-300" id="res-score-text">0 out of 12 Correct</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg flex justify-center items-center">
+                <div class="w-full max-w-[300px]">
+                    <canvas id="resultsChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-bold mb-4 text-purple-600 dark:text-purple-400"><i class="fa-solid fa-lightbulb mr-2"></i>Feedback & Recommendations</h3>
+                <p id="res-feedback-general" class="font-medium mb-4 italic text-gray-700 dark:text-gray-300"></p>
+                <ul class="list-none space-y-3" id="recommendations-list"></ul>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2 dark:border-gray-700">Detailed Breakdown</h3>
+            <div id="detailed-breakdown" class="space-y-2 font-medium"></div>
+        </div>
+        
+        <div class="mt-8 text-center no-print">
+            <button onclick="location.reload()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-md"><i class="fa-solid fa-rotate-left mr-2"></i>Start Over</button>
+        </div>
+    </section>
+
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+
+        const totalPages = 8;
+        let currentPageIndex = 0;
+        let userAnswers = {};
+        const totalMCQs = 12;
+
+        const pages = [
+            document.getElementById('page-intro'),
+            document.getElementById('page-1'),
+            document.getElementById('page-2'),
+            document.getElementById('page-3'),
+            document.getElementById('page-4'),
+            document.getElementById('page-5'),
+            document.getElementById('page-6'),
+            document.getElementById('page-7'),
+            document.getElementById('page-8')
+        ];
+        
+        const btnBack = document.getElementById('btn-back');
+        const btnNext = document.getElementById('btn-next');
+        const btnSubmit = document.getElementById('btn-submit');
+        const progressBar = document.getElementById('progress-bar');
+        const studentNameInput = document.getElementById('student-name');
+        const studentDateInput = document.getElementById('student-date');
+        const validationMsg = document.getElementById('validation-msg');
+
+        function updateNavUI() {
+            const progressPercentage = (currentPageIndex / totalPages) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+
+            pages.forEach(p => {
+                p.classList.add('hidden');
+                p.classList.remove('block');
+            });
+            pages[currentPageIndex].classList.remove('hidden');
+            pages[currentPageIndex].classList.add('block');
+
+            if (currentPageIndex === 0) {
+                btnBack.classList.add('hidden');
+                btnNext.classList.remove('hidden');
+                btnSubmit.classList.add('hidden');
+            } else if (currentPageIndex === totalPages) {
+                btnBack.classList.remove('hidden');
+                btnNext.classList.add('hidden');
+                btnSubmit.classList.remove('hidden'); // Only show submit on Activity 8 (last page)
+            } else {
+                btnBack.classList.remove('hidden');
+                btnNext.classList.remove('hidden');
+                btnSubmit.classList.add('hidden'); // Removed from pages 1-7
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        btnNext.addEventListener('click', () => {
+            if (currentPageIndex === 0) {
+                if (!studentNameInput.value.trim() || !studentDateInput.value) {
+                    validationMsg.classList.remove('hidden');
+                    studentNameInput.focus();
+                    return;
+                } else {
+                    validationMsg.classList.add('hidden');
+                }
+            }
+
+            if (currentPageIndex < totalPages) {
+                currentPageIndex++;
+                updateNavUI();
+            }
+        });
+
+        btnBack.addEventListener('click', () => {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                updateNavUI();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mcqContainers = document.querySelectorAll('.mcq-options');
+            mcqContainers.forEach(container => {
+                for (let i = container.children.length; i >= 0; i--) {
+                    container.appendChild(container.children[Math.random() * i | 0]);
+                }
+            });
+        });
+
+        window.checkAnswers = function(pageNumber) {
+            const activityBlock = document.querySelector(`.activity-block[data-page="${pageNumber}"]`);
+            if (!activityBlock) return;
+            
+            if (pageNumber === 7) {
+                const textarea = document.getElementById('summary-text');
+                textarea.disabled = true;
+                const btn = activityBlock.querySelector('.check-answers-btn');
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                activityBlock.querySelector('.feedback-msg').classList.remove('hidden');
+                return;
+            }
+
+            const questionGroups = activityBlock.querySelectorAll('.mcq-options');
+            let allAnswered = true;
+
+            questionGroups.forEach(group => {
+                const qName = group.getAttribute('data-name');
+                const selectedRadio = group.querySelector(`input[name="${qName}"]:checked`);
+                if (!selectedRadio) allAnswered = false;
+            });
+
+            if (!allAnswered) {
+                const msg = activityBlock.querySelector('.feedback-msg');
+                msg.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> Please answer all questions first.`;
+                msg.className = "feedback-msg mt-3 font-semibold text-red-500 block";
+                return;
+            }
+
+            let correctCount = 0;
+            questionGroups.forEach(group => {
+                const qName = group.getAttribute('data-name');
+                const radios = group.querySelectorAll(`input[type="radio"]`);
+                const selectedRadio = group.querySelector(`input[name="${qName}"]:checked`);
+                
+                radios.forEach(r => r.disabled = true);
+                const labels = group.querySelectorAll('.mcq-label');
+                labels.forEach(l => l.classList.add('opacity-70', 'cursor-not-allowed'));
+
+                if (selectedRadio.getAttribute('data-correct') === "true") {
+                    selectedRadio.parentElement.classList.remove('opacity-70');
+                    selectedRadio.parentElement.classList.add('correct', 'opacity-100');
+                    userAnswers[qName] = true;
+                    correctCount++;
+                } else {
+                    selectedRadio.parentElement.classList.remove('opacity-70');
+                    selectedRadio.parentElement.classList.add('incorrect', 'opacity-100');
+                    userAnswers[qName] = false;
+                    
+                    const correctRadio = group.querySelector(`input[data-correct="true"]`);
+                    if(correctRadio) {
+                         correctRadio.parentElement.classList.remove('opacity-70');
+                         correctRadio.parentElement.classList.add('correct', 'opacity-100', 'border-dashed');
+                    }
+                }
+            });
+
+            const btn = activityBlock.querySelector('.check-answers-btn');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            const msg = activityBlock.querySelector('.feedback-msg');
+            msg.innerHTML = `<i class="fa-solid fa-check-double mr-1"></i> You got ${correctCount} out of 2 correct.`;
+            msg.className = "feedback-msg mt-3 font-semibold block text-brand-blue";
+        };
+
+        const rows = 4;
+        const cols = 5;
+        const puzzleBoard = document.getElementById('puzzle-board');
+        const puzzlePool = document.getElementById('puzzle-pool');
+        const timerDisplay = document.getElementById('timer-display');
+        const startPuzzleBtn = document.getElementById('start-puzzle-btn');
+        const restartPuzzleBtn = document.getElementById('restart-puzzle-btn');
+        const puzzleContainer = document.getElementById('puzzle-container');
+        
+        let timerInterval;
+        let secondsElapsed = 0;
+        let puzzleStarted = false;
+        let draggedPiece = null;
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function initPuzzle() {
+            puzzleBoard.innerHTML = '';
+            puzzlePool.innerHTML = '';
+            let pieces = [];
+
+            const isSmallScreen = window.innerWidth < 640;
+            const pieceSize = isSmallScreen ? 70 : 80;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const slot = document.createElement('div');
+                    slot.classList.add('puzzle-slot');
+                    slot.dataset.row = r;
+                    slot.dataset.col = c;
+                    
+                    slot.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        slot.classList.add('bg-blue-200', 'dark:bg-blue-900');
+                    });
+                    slot.addEventListener('dragleave', () => {
+                        slot.classList.remove('bg-blue-200', 'dark:bg-blue-900');
+                    });
+                    slot.addEventListener('drop', handleDrop);
+                    
+                    puzzleBoard.appendChild(slot);
+
+                    const piece = document.createElement('div');
+                    piece.classList.add('puzzle-piece');
+                    piece.draggable = true;
+                    piece.dataset.row = r;
+                    piece.dataset.col = c;
+                    
+                    piece.style.backgroundColor = `hsl(${Math.random()*360}, 50%, 50%)`;
+                    piece.style.backgroundPosition = `-${c * pieceSize}px -${r * pieceSize}px`;
+                    
+                    piece.addEventListener('dragstart', handleDragStart);
+                    piece.addEventListener('dragend', handleDragEnd);
+
+                    pieces.push(piece);
+                }
+            }
+
+            pieces.sort(() => Math.random() - 0.5).forEach(p => puzzlePool.appendChild(p));
+            
+            puzzlePool.addEventListener('dragover', (e) => e.preventDefault());
+            puzzlePool.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if(draggedPiece) puzzlePool.appendChild(draggedPiece);
+                checkPuzzleWin();
+            });
+        }
+
+        function handleDragStart(e) {
+            if(!puzzleStarted) {
+                e.preventDefault();
+                return;
+            }
+            draggedPiece = this;
+            setTimeout(() => this.classList.add('opacity-0'), 0);
+        }
+
+        function handleDragEnd() {
+            this.classList.remove('opacity-0');
+            draggedPiece = null;
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('bg-blue-200', 'dark:bg-blue-900');
+            if (draggedPiece) {
+                if (this.children.length > 0) {
+                    puzzlePool.appendChild(this.firstChild);
+                }
+                this.appendChild(draggedPiece);
+                checkPuzzleWin();
+            }
+        }
+
+        function checkPuzzleWin() {
+            let win = true;
+            const slots = document.querySelectorAll('.puzzle-slot');
+            slots.forEach(slot => {
+                const r = slot.dataset.row;
+                const c = slot.dataset.col;
+                const piece = slot.firstChild;
+                if (!piece || piece.dataset.row !== r || piece.dataset.col !== c) {
+                    win = false;
+                }
+            });
+
+            if (win && puzzleStarted) {
+                clearInterval(timerInterval);
+                puzzleStarted = false;
+                puzzleContainer.classList.add('pointer-events-none');
+                puzzleBoard.classList.add('shiny-blue-border');
+                
+                const btn = document.createElement('div');
+                btn.className = "text-xl font-bold text-green-500 mt-4 text-center animate-bounce";
+                btn.innerHTML = "<i class='fa-solid fa-trophy mr-2'></i>Puzzle Completed in " + formatTime(secondsElapsed) + "!";
+                timerDisplay.parentNode.appendChild(btn);
+            }
+        }
+
+        startPuzzleBtn.addEventListener('click', () => {
+            if (puzzleStarted) return;
+            puzzleStarted = true;
+            puzzleContainer.classList.remove('opacity-50', 'pointer-events-none');
+            startPuzzleBtn.classList.add('hidden');
+            restartPuzzleBtn.classList.remove('hidden');
+            
+            secondsElapsed = 0;
+            timerDisplay.textContent = formatTime(secondsElapsed);
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                timerDisplay.textContent = formatTime(secondsElapsed);
+            }, 1000);
+        });
+
+        restartPuzzleBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            secondsElapsed = 0;
+            timerDisplay.textContent = formatTime(0);
+            puzzleStarted = true;
+            puzzleBoard.classList.remove('shiny-blue-border');
+            
+            const winMsg = timerDisplay.parentNode.querySelector('.text-green-500');
+            if(winMsg) winMsg.remove();
+            
+            initPuzzle();
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                timerDisplay.textContent = formatTime(secondsElapsed);
+            }, 1000);
+        });
+
+        window.markPuzzleComplete = function() {
+           clearInterval(timerInterval);
+           puzzleStarted = false;
+           puzzleContainer.classList.add('opacity-50', 'pointer-events-none');
+           
+           const btn = event.target;
+           btn.innerHTML = "<i class='fa-solid fa-check mr-2'></i>Section Completed";
+           btn.classList.replace('bg-brand-blue', 'bg-green-600');
+           btn.disabled = true;
+        }
+
+        initPuzzle();
+
+        btnSubmit.addEventListener('click', () => {
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('nav-footer').classList.add('hidden');
+            
+            const resSection = document.getElementById('results-section');
+            resSection.classList.remove('hidden');
+            
+            document.getElementById('res-student-name').innerHTML = `Student: <span class="text-brand-blue">${studentNameInput.value || 'N/A'}</span>`;
+            document.getElementById('res-student-date').textContent = `Date: ${studentDateInput.value || 'N/A'}`;
+            
+            let correct = 0;
+            const detailedBreakdown = document.getElementById('detailed-breakdown');
+            detailedBreakdown.innerHTML = '';
+            
+            for(let i=1; i<=6; i++) {
+                for(let j=1; j<=2; j++) {
+                    const qId = `p${i}q${j}`;
+                    const isCorrect = userAnswers[qId] === true;
+                    if(isCorrect) correct++;
+                    
+                    const statColor = isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+                    const icon = isCorrect ? 'fa-check' : 'fa-xmark';
+                    detailedBreakdown.innerHTML += `<div class="flex justify-between items-center p-2 border-b dark:border-gray-700">
+                        <span>Part ${i}, Question ${j}</span>
+                        <span class="${statColor} font-bold"><i class="fa-solid ${icon} mr-1"></i>${isCorrect ? 'Correct' : 'Incorrect'}</span>
+                    </div>`;
+                }
+            }
+            
+            const scorePercentage = Math.round((correct / totalMCQs) * 100);
+            
+            document.getElementById('res-score-display').textContent = `${scorePercentage}%`;
+            document.getElementById('res-score-text').textContent = `${correct} out of ${totalMCQs} Correct`;
+            
+            let generalFeedback = "";
+            if(scorePercentage >= 90) generalFeedback = "Outstanding work! You have an excellent understanding of the material.";
+            else if(scorePercentage >= 70) generalFeedback = "Good job! You have a solid grasp of the concepts, but there is room for improvement.";
+            else generalFeedback = "You might need to review the reading materials again carefully. Keep practicing!";
+            
+            document.getElementById('res-feedback-general').textContent = generalFeedback;
+
+            const recommendations = [
+                "Review the rules for using gerunds after prepositions as seen in biographical texts.",
+                "Practice identifying infinitives of purpose when characters describe their motives.",
+                "Reread texts carefully to capture specific historical dates and locations.",
+                "Pay attention to how authors use gerunds as subjects of sentences (e.g., 'Writing novels was his passion').",
+                "Practice summarizing spoken English to improve listening comprehension and note-taking.",
+                "Review vocabulary related to historical contexts, biographies, and mysteries.",
+                "Use context clues within paragraphs to understand the meaning of unfamiliar words.",
+                "Compare the use of bare infinitives and full infinitives in complex sentences."
+            ];
+            
+            const recList = document.getElementById('recommendations-list');
+            recList.innerHTML = '';
+            recommendations.forEach((rec, index) => {
+                recList.innerHTML += `
+                    <li class="flex items-start bg-gray-50 dark:bg-gray-700 p-3 rounded-lg border-l-4 border-brand-blue shadow-sm">
+                        <span class="font-bold text-brand-blue mr-3">${index + 1}.</span>
+                        <span class="text-gray-800 dark:text-gray-200">${rec}</span>
+                    </li>
+                `;
+            });
+
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            const incorrect = totalMCQs - correct;
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct', 'Incorrect / Unanswered'],
+                    datasets: [{
+                        data: [correct, incorrect],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderColor: ['#ffffff', '#ffffff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: htmlElement.classList.contains('dark') ? '#f3f4f6' : '#1f2937'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        updateNavUI();
+    </script>
+</body>
+</html>
